@@ -1,0 +1,1 @@
+Sway konfigurációs állomány: config
