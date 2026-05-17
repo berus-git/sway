@@ -1,1 +1,1 @@
-Sway konfigurációs állomány: config
+Sway konfigurációs állomány: config (~/.config/sway/config)
