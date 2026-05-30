@@ -1,0 +1,277 @@
+###
+# Berus konfiguráció sway-hez
+###
+
+### Változók ###
+
+# Logo billentyű. Használj Mod1-et az Alt-hoz.
+set $mod Mod4
+# Alapsori iránybillentyűk, mint a vim-ben
+set $left h
+set $down j
+set $up k
+set $right l
+# A preferált terminál emulátorod
+set $term kitty
+# A preferált alkalmazásindítód
+set $menu wmenu-run -b -f 'DejaVu Sans Mono 10'
+
+### Kijelző konfiguráció ###
+
+# Alapértelmezett háttérkép (további felbontások a /usr/share/backgrounds/sway/ könyvtárban érhetők el)
+output * bg /home/berus/.config/sway/wp.jpg fill
+#
+# Példa konfiguráció:
+#
+#   output HDMI-A-1 resolution 1920x1080 position 1920,0
+#
+# A kijelzőid nevét a következő parancs futtatásával tudhatod meg: swaymsg -t get_outputs
+
+### Tétlenség konfigurációja ###
+
+# Példa konfiguráció:
+#
+# exec swayidle -w \
+#          timeout 300 'swaylock -f -c 000000' \
+#          
+# timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+#          before-sleep 'swaylock -f -c 000000'
+#
+# Ez lezárja a képernyőt 300 másodperc tétlenség után, majd újabb 300 másodperc
+# után kikapcsolja a kijelzőket, és visszakapcsolja őket, amikor felébred.
+# Képernyőzárat alkalmaz mielőtt a számítógép alvó állapotba lépne.
+
+### Beviteli konfiguráció ###
+
+# Példa konfiguráció:
+#
+#   input type:touchpad {
+#       dwt enabled
+#       tap enabled
+#       natural_scroll enabled
+#       middle_emulation enabled
+#   }
+#
+   input type:keyboard {
+       xkb_layout "hu"
+   }
+#
+# Az egyes eszközöket külön-külön is konfigurálhatod.
+# Olvasd el a `man 5 sway-input` kézikönyvet a szekcióval kapcsolatos további információkért.
+
+### Billentyűkombinációk ###
+
+# Alapok:
+#
+    # Terminál indítása
+    bindsym $mod+Return exec $term
+
+    # Fókuszált ablak bezárása
+    bindsym $mod+q kill
+
+    # Alkalmazásindító megnyitása
+    bindsym $mod+d exec $menu
+
+    # Lebegő ablakok mozgatása a $mod billentyű és a bal egérgomb nyomva tartásával.
+    # Átméretezésük a jobb egérgomb + $mod kombinációval.
+    # A név ellenére nem lebegő ablakoknál is működik.
+    # Változtasd a normal-t inverse-re, ha a bal egérgombot átméretezésre, a jobb
+    # egérgombot pedig mozgatásra szeretnéd használni.
+    floating_modifier $mod normal
+
+    # Konfigurációs fájl újratöltése
+    bindsym $mod+Shift+c reload
+
+    # Kilépés a sway-ből (kijelentkeztet a Wayland munkamenetből)
+    bindsym $mod+Shift+e exec swaynag -t warning -m 'Biztosan ki szeretnél lépni a sway-ből?' -B 'Igen, kilépés a sway-ből' 'swaymsg exit'
+
+# Navigáció:
+#
+    # Fókusz mozgatása
+    bindsym $mod+$left focus left
+    bindsym $mod+$down focus down
+    bindsym $mod+$up focus up
+    bindsym $mod+$right focus right
+    # Vagy használd a $mod+[fel|le|balra|jobbra] nyilakat
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+
+    # A fókuszált ablak mozgatása ugyanezekkel, de a Shift hozzáadásával
+    bindsym $mod+Shift+$left move left
+    bindsym $mod+Shift+$down move down
+    bindsym $mod+Shift+$up move up
+    bindsym $mod+Shift+$right move right
+    # Ugyanez a nyíl billentyűkkel
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+
+# Munkaterületek:
+#
+    # Váltás munkaterületre
+    bindsym $mod+1 workspace number 1
+    bindsym $mod+2 workspace number 2
+    bindsym $mod+3 workspace number 3
+    bindsym $mod+4 workspace number 4
+    bindsym $mod+5 workspace number 5
+    bindsym $mod+6 workspace number 6
+    bindsym $mod+7 workspace number 7
+    bindsym $mod+8 workspace number 8
+    bindsym $mod+9 workspace number 9
+    bindsym $mod+0 workspace number 10
+    # Fókuszált konténer áthelyezése munkaterületre
+    bindsym $mod+Shift+1 move container to workspace number 1
+    bindsym $mod+Shift+2 move container to workspace number 2
+    bindsym $mod+Shift+3 move container to workspace number 3
+    bindsym $mod+Shift+4 move container to workspace number 4
+    bindsym $mod+Shift+5 move container to workspace number 5
+    bindsym $mod+Shift+6 move container to workspace number 6
+    bindsym $mod+Shift+7 move container to workspace number 7
+    bindsym $mod+Shift+8 move container to workspace number 8
+    bindsym $mod+Shift+9 move container to workspace number 9
+    bindsym $mod+Shift+0 move container to workspace number 10
+    # Megjegyzés: a munkaterületek bármilyen nevet kaphatnak, nem csak számokat.
+    # Mi csak az 1-10-et használjuk alapértelmezettként.
+
+# Elrendezéssel kapcsolatos dolgok:
+#
+    # Eloszthatod a jelenlegi fókuszált objektumot a
+    # $mod+b vagy $mod+v gombokkal, vízszintes és függőleges osztáshoz
+    # megfelelően.
+    bindsym $mod+b splith
+    bindsym $mod+v splitv
+
+    # Jelenlegi konténer váltása a különböző elrendezési stílusok között
+    bindsym $mod+s layout stacking
+    bindsym $mod+w layout tabbed
+    bindsym $mod+e layout toggle split
+
+    # Jelenlegi fókusz teljes képernyőssé tétele
+    bindsym $mod+f fullscreen
+
+    # Váltás a jelenlegi fókusz között mozaik (tiling) és lebegő (floating) mód között
+    bindsym $mod+Shift+space floating toggle
+
+    # Fókusz váltása a mozaik terület és a lebegő terület között
+    bindsym $mod+space focus mode_toggle
+
+    # Fókusz mozgatása a szülő konténerre
+    bindsym $mod+a focus parent
+
+# Scratchpad (Jegyzetfüzet):
+#
+    # A Sway rendelkezik egy "scratchpad"-del, ami egyfajta "feneketlen zsák" az ablakoknak.
+    # Ide küldhetsz ablakokat, és később előveheted őket.
+    # A jelenleg fókuszált ablak áthelyezése a scratchpad-re
+    bindsym $mod+Shift+minus move scratchpad
+
+    # A következő scratchpad ablak megjelenítése vagy a fókuszált scratchpad ablak elrejtése.
+    # Ha több scratchpad ablak is van, ez a parancs végigciklikus köztük.
+    bindsym $mod+minus scratchpad show
+
+# Konténerek átméretezése:
+#
+mode "resize" {
+    # a balra (left) csökkenti a konténer szélességét
+    # a jobbra (right) növeli a konténer szélességét
+    # a fel (up) csökkenti a konténer magasságát
+    # a le (down) növeli a konténer magasságát
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+
+    # Ugyanez a nyíl billentyűkkel
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    # Visszatérés az alapértelmezett módba
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# Segédprogramok:
+#
+    # Speciális billentyűk a hangerő beállításához PulseAudio-n keresztül
+    bindsym --locked $mod+KP_Multiply exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
+    bindsym --locked $mod+KP_Subtract exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
+    bindsym --locked $mod+KP_Add exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
+   
+    # Speciális billentyű képernyőkép készítéséhez grim-mel
+    bindsym Print exec grim
+
+# Kikapcsolási menü
+#
+    bindsym $mod+Shift+r exec systemctl reboot
+    bindsym $mod+Shift+p exec systemctl poweroff
+    bindsym $mod+Shift+s exec systemctl suspend
+   
+### Állapotsor (Status Bar) ###
+
+# Olvasd el a `man 5 sway-bar` kézikönyvet a szekcióval kapcsolatos további információkért.
+bar {
+    position top
+
+    # Amikor a status_command új sort ír a stdout-ra, a swaybar frissül.
+    # Az alapértelmezett csak az aktuális dátumot és időt mutatja.
+    #status_command while date +'%Y-%m-%d %X'; do sleep 1; done
+     status_command ~/.config/sway/status.sh
+
+    colors {
+        statusline #ffffff
+        background #323232
+        inactive_workspace #32323200 #32323200 #5c5c5c
+    }
+}
+
+### Téma ###
+
+# Szín paletta (Gruvbox-szerű)
+set $bg #282828
+set $fg #ebdbb2
+set $red #cc241d
+set $green #98971a
+set $yellow #d79921
+set $blue #458588
+set $purple #b16286
+set $aqua #689d6a
+set $gray #a89984
+set $darkgray #1d2021
+
+# Ablak szegélyek színei (border, background, text, indicator, child_border)
+client.focused          $blue $blue $darkgray $purple $blue
+client.focused_inactive $darkgray $darkgray $yellow $purple $darkgray
+client.unfocused        $darkgray $darkgray $yellow $purple $darkgray
+client.urgent           $red $red $fg $red $red
+
+# Szegély vastagság és stílus
+default_border pixel 2
+default_floating_border pixel 2
+hide_edge_borders none
+smart_borders off
+
+# Rések az ablakok között
+gaps inner 5
+gaps outer 5
+
+# Betűtípus a címsorhoz
+font pango:DejaVu Sans Mono 10
+
+# Gtk téma
+exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+exec gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+exec gsettings set org.gnome.desktop.interface icon-theme 'Adwaita'
+
+# Szemkímélés
+exec wlsunset -l 47.2 -L 18.1 -t 4500 -T 6000
+
+# Értesítések
+exec mako
+
+include /etc/sway/config.d/*
