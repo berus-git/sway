@@ -12,15 +12,20 @@ set $down j
 set $up k
 set $right l
 # A preferált terminál emulátorod
-set $term kitty
+set $term footclient
 # A preferált alkalmazásindítód
-set $menu wmenu-run -b -f 'DejaVu Sans Mono 10'
+set $menu fuzzel
 
 ### Kijelző konfiguráció ###
 
 # Alapértelmezett háttérkép (további felbontások a /usr/share/backgrounds/sway/ könyvtárban érhetők el)
-output * bg /home/berus/.config/sway/wp.jpg fill
-#
+#output * bg /home/berus/.config/sway/wp.jpg fill
+exec ~/.azotebg
+
+# Optimalizáció: bekapcsolja a változó képfrissítési gyakoriságot.
+
+output * adaptive_sync on
+
 # Példa konfiguráció:
 #
 #   output HDMI-A-1 resolution 1920x1080 position 1920,0
@@ -54,6 +59,7 @@ output * bg /home/berus/.config/sway/wp.jpg fill
 #
    input type:keyboard {
        xkb_layout "hu"
+       xkb_model "pc105"
    }
 #
 # Az egyes eszközöket külön-külön is konfigurálhatod.
@@ -140,9 +146,9 @@ output * bg /home/berus/.config/sway/wp.jpg fill
 #
     # Eloszthatod a jelenlegi fókuszált objektumot a
     # $mod+b vagy $mod+v gombokkal, vízszintes és függőleges osztáshoz
-    # megfelelően.
-    bindsym $mod+b splith
-    bindsym $mod+v splitv
+    # megfelelően. Indikátor gombnyomásra jelenik meg.
+    bindsym $mod+b splith; client.focused  $yellow $yellow $darkgray $red $yellow
+    bindsym $mod+v splitv; client.focused  $yellow $yellow $darkgray $red $yellow
 
     # Jelenlegi konténer váltása a különböző elrendezési stílusok között
     bindsym $mod+s layout stacking
@@ -204,14 +210,27 @@ bindsym $mod+r mode "resize"
     bindsym --locked $mod+KP_Add exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
    
     # Speciális billentyű képernyőkép készítéséhez grim-mel
-    bindsym Print exec grim
+    bindsym Print exec grim && notify-send "Siker!"
 
 # Kikapcsolási menü
 #
-    bindsym $mod+Shift+r exec systemctl reboot
-    bindsym $mod+Shift+p exec systemctl poweroff
-    bindsym $mod+Shift+s exec systemctl suspend
+   # bindsym $mod+Shift+r exec systemctl reboot
+   # bindsym $mod+Shift+p exec systemctl poweroff
+   # bindsym $mod+Shift+s exec systemctl suspend
+   bindsym $mod+Shift+p exec wlogout
    
+### Szín paletta ###
+set $bg #282828
+set $fg #ebdbb2
+set $red #cc241d
+set $green #98971a
+set $yellow #d79921
+set $blue #458588
+set $purple #b16286
+set $aqua #689d6a
+set $gray #a89984
+set $darkgray #1d2021
+
 ### Állapotsor (Status Bar) ###
 
 # Olvasd el a `man 5 sway-bar` kézikönyvet a szekcióval kapcsolatos további információkért.
@@ -224,31 +243,24 @@ bar {
      status_command ~/.config/sway/status.sh
 
     colors {
-        statusline #ffffff
-        background #323232
-        inactive_workspace #32323200 #32323200 #5c5c5c
+        statusline $fg
+        background $bg
+        inactive_workspace $bg $bg $gray
     }
 }
 
-### Téma ###
+### Megjelenés ###
 
-# Szín paletta (Gruvbox-szerű)
-set $bg #282828
-set $fg #ebdbb2
-set $red #cc241d
-set $green #98971a
-set $yellow #d79921
-set $blue #458588
-set $purple #b16286
-set $aqua #689d6a
-set $gray #a89984
-set $darkgray #1d2021
 
 # Ablak szegélyek színei (border, background, text, indicator, child_border)
-client.focused          $blue $blue $darkgray $purple $blue
-client.focused_inactive $darkgray $darkgray $yellow $purple $darkgray
-client.unfocused        $darkgray $darkgray $yellow $purple $darkgray
+client.focused          $yellow $yellow $darkgray $yellow $yellow
+client.focused_inactive $darkgray $darkgray $yellow $darkgray $darkgray
+client.unfocused        $darkgray $darkgray $yellow $darkgray $darkgray
 client.urgent           $red $red $fg $red $red
+
+# Amint új ablak nyílik, az indikátor újra rejtett lesz a fókuszált ablakon
+for_window [class=".*"] client.focused   $yellow $yellow $darkgray $yellow $yellow
+for_window [app_id=".*"] client.focused  $yellow $yellow $darkgray $yellow $yellow
 
 # Szegély vastagság és stílus
 default_border pixel 2
@@ -264,14 +276,26 @@ gaps outer 5
 font pango:DejaVu Sans Mono 10
 
 # Gtk téma
-exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-exec gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
-exec gsettings set org.gnome.desktop.interface icon-theme 'Adwaita'
+#exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+#exec gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+#exec gsettings set org.gnome.desktop.interface icon-theme 'Adwaita'
+
+### KDE integráció ###
+exec_always dbus-update-activation-environment --systemd WAYLAND_DISPLAY DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP KDE_FULL_SESSION
+exec_always kded6
+exec_always /usr/lib/x86_64-linux-gnu/libexec/polkit-kde-authentication-agent-1
+exec_always XDG_MENU_PREFIX=plasma- kbuildsycoca6 
 
 # Szemkímélés
 exec wlsunset -l 47.2 -L 18.1 -t 4500 -T 6000
 
 # Értesítések
-exec mako
+exec swaync
 
-include /etc/sway/config.d/*
+# Értesítési központ megnyitása/bezárása
+bindsym $mod+Shift+n exec swaync-client -t -sw
+
+# Foot szerver
+exec_always foot -s
+
+#include /etc/sway/config.d/:*
